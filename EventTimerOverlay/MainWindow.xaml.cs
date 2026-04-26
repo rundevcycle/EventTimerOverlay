@@ -38,7 +38,30 @@ namespace EventTimerOverlay
         private void Tick(object s, EventArgs e)
         {
             remaining -= TimeSpan.FromMilliseconds(100);
-            if (remaining <= TimeSpan.Zero) { remaining = TimeSpan.Zero; timer.Stop(); }
+            if (remaining <= TimeSpan.Zero) 
+            { 
+                remaining = TimeSpan.Zero; 
+                timer.Stop();
+                overlay?.Update(remaining, total);
+
+                if (AutoHideCheckBox.IsChecked == true)
+                {
+                    // Show the final 0:00 state for a moment before hiding, then fade out.
+                    var delay = new DispatcherTimer
+                    {
+                        Interval = TimeSpan.FromSeconds(5)
+                    };
+
+                    delay.Tick += (_, __) =>
+                    {
+                        delay.Stop();
+                        overlay?.FadeOut();
+                    };
+
+                    delay.Start();
+                }
+                return;
+            }
 
             overlay?.Update(remaining, total);
         }

@@ -26,6 +26,10 @@
         <StackPanel Orientation="Horizontal">
             <Button Content="Show Overlay" Click="ShowOverlay_Click" />
             <Button Content="Hide Overlay" Click="HideOverlay_Click" />
+            <CheckBox x:Name="AutoHideCheckBox"
+                Content="Auto-hide when timer ends"
+                IsChecked="True"
+                Margin="4"/>
         </StackPanel>
 
         <Separator Margin="10"/>
