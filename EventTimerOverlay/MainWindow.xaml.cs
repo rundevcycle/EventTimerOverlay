@@ -43,6 +43,7 @@ namespace EventTimerOverlay
                 remaining = TimeSpan.Zero; 
                 timer.Stop();
                 overlay?.Update(remaining, total);
+                MainTimerText.Text = remaining.ToString(@"m\:ss");
 
                 if (AutoHideCheckBox.IsChecked == true)
                 {
@@ -64,6 +65,7 @@ namespace EventTimerOverlay
             }
 
             overlay?.Update(remaining, total);
+            MainTimerText.Text = remaining.ToString(@"m\:ss");
         }
 
         private void StartPreset(int min)
@@ -131,6 +133,7 @@ namespace EventTimerOverlay
 
             // Update overlay one last time (so it doesn't freeze mid-count)
             overlay?.Update(remaining, total);
+            MainTimerText.Text = remaining.ToString(@"m\:ss");
 
             // Fade out overlay
             overlay?.FadeOut();
@@ -171,11 +174,12 @@ namespace EventTimerOverlay
                 overlay.SetOrientation(VerticalCheckBox.IsChecked == true);
             }
 
-            overlay.SetClickThrough(EditModeCheckBox.IsChecked == false);
+            overlay.SetClickThrough(EditModeCheckBox.IsChecked == false);       
             overlay.Show();
             overlay.FadeIn();
 
             VerticalCheckBox.IsEnabled = (EditModeCheckBox.IsChecked == true);
+            UpdateSizeSlider();
         }
 
         private void HideOverlay_Click(object s, RoutedEventArgs e)
@@ -202,12 +206,14 @@ namespace EventTimerOverlay
                 overlay?.SetClickThrough(false);
                 EditModeCheckBox.IsChecked = true;
                 VerticalCheckBox.IsEnabled = true;
+                SizeSlider.IsEnabled = true;
             }
             else
             {
                 overlay?.SetClickThrough(true);
                 EditModeCheckBox.IsChecked = false;
                 VerticalCheckBox.IsEnabled = false;
+                SizeSlider.IsEnabled = false;
             }
         }
 
@@ -274,13 +280,14 @@ namespace EventTimerOverlay
             overlay.SetOrientation(false);
             VerticalCheckBox.IsChecked = false;
 
-            overlay.Width = s.Bounds.Width * 0.75;
+            overlay.Width = s.Bounds.Width * (SizeSlider.Value / 100.0);
             overlay.Height = 50;
 
             overlay.Left = s.Bounds.Left + (s.Bounds.Width - overlay.Width) / 2;
             overlay.Top = s.Bounds.Bottom - overlay.Height;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
+            UpdateSizeSlider();
         }
 
         private void LayoutTop_Click(object sender, RoutedEventArgs e)
@@ -292,13 +299,14 @@ namespace EventTimerOverlay
             overlay.SetOrientation(false);
             VerticalCheckBox.IsChecked = false;
 
-            overlay.Width = s.Bounds.Width * 0.75;
+            overlay.Width = s.Bounds.Width * (SizeSlider.Value / 100.0);
             overlay.Height = 50;
 
             overlay.Left = s.Bounds.Left + (s.Bounds.Width - overlay.Width) / 2;
             overlay.Top = s.Bounds.Top;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
+            UpdateSizeSlider();
         }
 
         private void LayoutMiddle_Click(object sender, RoutedEventArgs e)
@@ -310,13 +318,14 @@ namespace EventTimerOverlay
             overlay.SetOrientation(false);
             VerticalCheckBox.IsChecked = false;
 
-            overlay.Width = s.Bounds.Width * 0.5;
+            overlay.Width = s.Bounds.Width * (SizeSlider.Value / 100.0);
             overlay.Height = 50;
 
             overlay.Left = s.Bounds.Left + (s.Bounds.Width - overlay.Width) / 2;
             overlay.Top = s.Bounds.Top + (s.Bounds.Height - overlay.Height) / 2;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
+            UpdateSizeSlider();
         }
 
         private void LayoutRight_Click(object sender, RoutedEventArgs e)
@@ -329,12 +338,13 @@ namespace EventTimerOverlay
             VerticalCheckBox.IsChecked = true;
 
             overlay.Width = 60;
-            overlay.Height = s.Bounds.Height * 0.75;
+            overlay.Height = s.Bounds.Height * (SizeSlider.Value / 100.0);
 
             overlay.Left = s.Bounds.Right - overlay.Width;
             overlay.Top = s.Bounds.Top + (s.Bounds.Height - overlay.Height) / 2;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
+            UpdateSizeSlider();
         }
 
         private void LayoutLeft_Click(object sender, RoutedEventArgs e)
@@ -347,12 +357,50 @@ namespace EventTimerOverlay
             VerticalCheckBox.IsChecked = true;
 
             overlay.Width = 60;
-            overlay.Height = s.Bounds.Height * 0.75;
+            overlay.Height = s.Bounds.Height * (SizeSlider.Value / 100.0);
 
             overlay.Left = s.Bounds.Left;
             overlay.Top = s.Bounds.Top + (s.Bounds.Height - overlay.Height) / 2;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
+            UpdateSizeSlider();
+        }
+
+        private void UpdateSizeSlider()
+        {
+            var screen = GetCurrentScreen();
+
+            if (overlay.IsVertical)
+            {
+                SizeSlider.Value = (overlay.Height / screen.Bounds.Height) * 100;
+            }
+            else
+            {
+                SizeSlider.Value = (overlay.Width / screen.Bounds.Width) * 100;
+            }
+        }
+
+        private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (overlay == null) return;
+
+            var screen = GetCurrentScreen();
+
+            double percent = SizeSlider.Value / 100.0;
+            SizeLabel.Text = $"Overlay Size: {(int)SizeSlider.Value}%";
+
+            if (overlay.IsVertical)
+            {
+                // Vertical bar → controls HEIGHT
+                overlay.Height = screen.Bounds.Height * percent;
+                overlay.Top = screen.Bounds.Top + (screen.Bounds.Height - overlay.Height) / 2;
+            }
+            else
+            {
+                // Horizontal bar → controls WIDTH
+                overlay.Width = screen.Bounds.Width * percent;
+                overlay.Left = screen.Bounds.Left + (screen.Bounds.Width - overlay.Width) / 2;
+            }
         }
     }
 }
