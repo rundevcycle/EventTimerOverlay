@@ -1,0 +1,92 @@
+﻿<Window x:Class="EventTimerOverlay.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Break Timer" 
+        Height="380" MinHeight="380" 
+        Width="580" MinWidth="580">
+
+    <StackPanel Margin="10">
+
+        <TextBlock Text="Show Timer on Display" FontWeight="Bold"/>
+        <ComboBox x:Name="ScreenSelector" DisplayMemberPath="DeviceName"/>
+
+        <TextBlock Text="Timer Minutes" Margin="0,10,0,0" FontWeight="Bold"/>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="1 min" Click="Preset1_Click"/>
+            <Button Content="2 min" Click="Preset2_Click"/>
+            <Button Content="5 min" Click="Preset5_Click"/>
+            <Button Content="10 min" Click="Preset10_Click"/>
+            <Button Content="15 min" Click="Preset15_Click"/>
+            <Separator Margin="10,0"/>
+            <TextBox x:Name="MinutesInput" Width="80" Height="30" FontSize="16" KeyDown="MinutesInput_KeyDown" />
+            <Button Content="Start" Click="StartButton_Click"/>
+            <Button Content="Stop" Click="StopButton_Click"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Show Overlay" Click="ShowOverlay_Click" />
+            <Button Content="Hide Overlay" Click="HideOverlay_Click" />
+        </StackPanel>
+
+        <Separator Margin="10"/>
+
+        <TextBlock Text="Position" FontWeight="Bold"/>
+
+        <Grid Margin="0,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- North -->
+            <Button Content="↑ Top"
+            Grid.Row="0" Grid.Column="1"
+            Click="LayoutTop_Click"/>
+
+            <!-- West -->
+            <Button Content="← Left"
+            Grid.Row="1" Grid.Column="0"
+            Click="LayoutLeft_Click"/>
+
+            <!-- Center (optional spacer or label) -->
+            <Button Content="← Middle →"
+                Grid.Row="1" Grid.Column="1"
+                Click="LayoutMiddle_Click"/>
+
+            <!-- East -->
+            <Button Content="Right →"
+            Grid.Row="1" Grid.Column="2"
+            Click="LayoutRight_Click"/>
+
+            <!-- South -->
+            <Button Content="↓ Bottom"
+            Grid.Row="2" Grid.Column="1"
+            Click="LayoutBottom_Click"/>
+        </Grid>
+
+        
+        <StackPanel Orientation="Horizontal">
+            <CheckBox x:Name="EditModeCheckBox"
+                Content="Edit Overlay Position"
+                IsChecked="False"
+                Checked="EditMode_Checked"
+                Unchecked="EditMode_Unchecked"
+                Margin="4"/>
+            <Separator Margin="10,0"/>
+            <CheckBox x:Name="VerticalCheckBox"
+                Content="Vertical Bar"
+                IsEnabled="False"
+                IsChecked="False"
+                Checked="VerticalCheckBox_Checked"
+                Unchecked="VerticalCheckBox_Unchecked"
+                Margin="4"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
