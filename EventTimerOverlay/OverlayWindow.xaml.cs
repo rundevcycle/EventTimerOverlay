@@ -56,9 +56,19 @@ namespace EventTimerOverlay
         private Color GetColor(double p)
         {
             if (p > 0.5)
-                return Lerp(Colors.Yellow, Colors.LimeGreen, (p - 0.5) * 2);
+            {
+                return Colors.LimeGreen;
+            }
+            else if (p > 0.25)
+            {
+                double t = (p - 0.25) / 0.25;
+                return Lerp(Colors.Yellow, Colors.LimeGreen, t);
+            }
             else
-                return Lerp(Colors.Red, Colors.Yellow, p * 2);
+            {
+                double t = p / 0.25;
+                return Lerp(Colors.Red, Colors.Yellow, t);
+            }
         }
 
         private Color Lerp(Color a, Color b, double t)
