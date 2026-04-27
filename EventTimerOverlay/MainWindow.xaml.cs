@@ -23,6 +23,8 @@ namespace EventTimerOverlay
 
             settings = SettingsManager.Load();
 
+            UpdateSizeSliderFromSettings();
+
             timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += Tick;
         }
@@ -179,7 +181,6 @@ namespace EventTimerOverlay
             overlay.FadeIn();
 
             VerticalCheckBox.IsEnabled = (EditModeCheckBox.IsChecked == true);
-            UpdateSizeSlider();
         }
 
         private void HideOverlay_Click(object s, RoutedEventArgs e)
@@ -287,7 +288,6 @@ namespace EventTimerOverlay
             overlay.Top = s.Bounds.Bottom - overlay.Height;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
-            UpdateSizeSlider();
         }
 
         private void LayoutTop_Click(object sender, RoutedEventArgs e)
@@ -306,7 +306,6 @@ namespace EventTimerOverlay
             overlay.Top = s.Bounds.Top;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
-            UpdateSizeSlider();
         }
 
         private void LayoutMiddle_Click(object sender, RoutedEventArgs e)
@@ -325,7 +324,6 @@ namespace EventTimerOverlay
             overlay.Top = s.Bounds.Top + (s.Bounds.Height - overlay.Height) / 2;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
-            UpdateSizeSlider();
         }
 
         private void LayoutRight_Click(object sender, RoutedEventArgs e)
@@ -344,7 +342,6 @@ namespace EventTimerOverlay
             overlay.Top = s.Bounds.Top + (s.Bounds.Height - overlay.Height) / 2;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
-            UpdateSizeSlider();
         }
 
         private void LayoutLeft_Click(object sender, RoutedEventArgs e)
@@ -363,20 +360,36 @@ namespace EventTimerOverlay
             overlay.Top = s.Bounds.Top + (s.Bounds.Height - overlay.Height) / 2;
 
             SavePosition(overlay.Left, overlay.Top, overlay.Width, overlay.Height);
-            UpdateSizeSlider();
         }
 
-        private void UpdateSizeSlider()
+        private void UpdateSizeSliderFromSettings()
         {
-            var screen = GetCurrentScreen();
+            if (settings?.Positions == null) return;
 
-            if (overlay.IsVertical)
+            var screen = GetCurrentScreen();
+            if (screen == null) return;
+
+            if (settings.Positions.TryGetValue(screen.DeviceName, out var p))
             {
-                SizeSlider.Value = (overlay.Height / screen.Bounds.Height) * 100;
-            }
-            else
-            {
-                SizeSlider.Value = (overlay.Width / screen.Bounds.Width) * 100;
+                // Update the Vertical checkbox to match saved orientation
+                VerticalCheckBox.IsChecked = p.IsVertical;
+
+                // Compute percent based on saved dimensions and current screen bounds
+                if (p.IsVertical)
+                {
+                    if (screen.Bounds.Height > 0)
+                    {
+                        SizeSlider.Value = (p.Height / screen.Bounds.Height) * 100.0;
+                    }
+                }
+                else
+                {
+                    if (screen.Bounds.Width > 0)
+                    {
+                        SizeSlider.Value = (p.Width / screen.Bounds.Width) * 100.0;
+                    }
+                }
+                SizeLabel.Text = $"Overlay Size: {(int)SizeSlider.Value}%";
             }
         }
 
