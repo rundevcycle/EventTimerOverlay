@@ -1,4 +1,4 @@
-# EventTimerOverlay
+# Event Break Timer Overlay
 
 A small utility to show a countdown timer with progress bar on a second screen.  Useful to show the time remaining for breaks during a long meeting or the time limit for small group discussion while slides are still on the screen.
 
@@ -18,4 +18,12 @@ The progress bar can be shown horizontally or vertically.
 ![Vertical timer](doc-images/overlay-vertical-full-screen.png)
 
 
+## Requirements
 
+Requires:
+
+* Windows x64
+* .NET 10 Desktop Runtime
+
+Download:
+https://dotnet.microsoft.com/download/dotnet/10.0

@@ -7,14 +7,25 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <AssemblyTitle>Event Timer Overlay</AssemblyTitle>
+    <AssemblyTitle>Event Break Timer</AssemblyTitle>
     <ApplicationIcon>hourglass_icon.ico</ApplicationIcon>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
+    <Version>1.0.0</Version>
+    <Description>Display a moveable countdown timer during events &amp; meetings.</Description>
+    <PackageIcon>hourglass_icon.ico</PackageIcon>
+    <Copyright>©2026 Andy Smith</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="hourglass_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="hourglass_icon.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
